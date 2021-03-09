@@ -1,0 +1,314 @@
+#:import PyPrgName0 kivy3_ini.PyPrgName0
+#:import PyFilePath kivy3_ini.PyFilePath
+#:import Colors kivy3_ini.Colors
+#:import Platform kivy3_ini.Platform
+#:import timeStamp kivy3_ini.timeStamp
+#:import WindowSizes kivy3_ini.WindowSizes
+# home buttom example:
+# https://stackoverflow.com/questions/49184804/scrollview-padding-one-side-more-than-the-opposite-side-python-kivy
+<PongBall>:
+    background_color : 1,0,0,1
+    size: 50, 50 
+    canvas:
+        Color: 
+            rgba: [.588, .294, 0, 1]
+        Ellipse:
+            pos: self.pos
+            size: self.size          
+
+<PongPaddle>:
+    background_color : 0, 0, 1, 1 
+    # 2.55, 0.79, 0.25, 1 
+    size: 25, 200
+    canvas:
+        Color: 
+            rgba: [1.0, 0.3882, 0.2784, 1]
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<PongGame>:
+    id: ponggame
+    ball: pong_ball
+    player1: player_left
+    player2: player_right
+    canvas.before:
+        Color:
+            rgba: [0.7412000000000001, 0.7176, 0.41960000000000003, 1]
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    canvas:
+        Rectangle:
+            pos: self.center_x - 5, 0
+            size: 10, self.height
+    Label:
+        font_size: 70  
+        center_x: root.width / 4
+        top: root.top - 50
+        text: str(root.player1.score)
+    Label:
+        font_size: 70  
+        center_x: root.width * 3 / 4
+        top: root.top - 50
+        text: str(root.player2.score)
+    PongBall:
+        id: pong_ball
+        center: self.parent.center
+    PongPaddle:
+        id: player_left
+        x: root.x
+        center_y: root.center_y
+        color: (0,0,1,1)
+        text: "L"
+    PongPaddle:
+        id: player_right
+        x: root.width - self.width
+        center_y: root.center_y
+        color: (0,0,1,1)
+        text: "R"
+
+<ScreenManagement>:
+    MainScreen:
+        name: 'Main'
+    CalculatorScreen:
+        name: 'Calculator'
+    PongScreen:
+        name: 'Pong'
+    XandOScreen:
+        name: 'XandO'
+
+<PongScreen>:
+    game_in_screen: ponggame
+    BoxLayout:
+        orientation: 'vertical'
+        PongGame:
+            id: ponggame
+        BoxLayout:
+            size_hint:(1, .07)
+            Button:
+                text: 'Start Game'
+                on_press: root.start_pong_game()
+            Button:
+                text: 'Stop Game'
+                on_press: root.stop_pong_game()
+            Button:
+                text: 'Goto Main'
+                on_press: root.manager.current = 'Main'
+                
+
+<XandOScreen>:
+    game_in_screen: x_o_game
+    BoxLayout:
+        id: x_o_game
+        orientation: 'vertical'
+        Label:
+            id: lbl1
+            text:'Please choose Player and Layout\nGAME_END and WINNER calculation is not yet included\nOnly SINGLE mode available'
+            color: Colors.get('red',(0,0,1,1))
+        BoxLayout:
+            size_hint:(1, .1)
+            Label:
+                id: player
+                text: 'Choose Player'
+                color: Colors.get('blue',(0,0,1,1))
+                canvas.before:
+                    Color:
+                        rgba: (0,0,1,1)
+                    Line:
+                        width: 0.5
+                        rectangle: self.x, self.y, self.width, self.height
+            Button:
+                text: 'Player X'
+                on_press: root.player_choice('X')
+            Button:
+                text: 'Player O'
+                on_press: root.player_choice('O')
+        BoxLayout:
+            size_hint:(1, .1)
+            Label:
+                id: gmode
+                text: 'Choose Mode'
+                color: Colors.get('blue',(0,0,1,1))
+            Button:
+                id: spl_mode
+                text: 'Single Player Mode'
+                on_press: root.mode_x_o_game('Single')
+            Button:
+                id: o2o_mode
+                text: 'One to One Mode'
+                on_press: root.mode_x_o_game('One2One')
+        BoxLayout:
+            size_hint:(1, .1)
+            Label:
+                id: glayout
+                text: 'Choose Layout'
+                color: Colors.get('blue',(0,0,1,1))
+            Button:
+                text: '3x3'
+                on_press: root.layout_x_o_game(3)
+            Button:
+                text: '4x4'
+                on_press: root.layout_x_o_game(4)
+        BoxLayout:
+            size_hint:(1, .1)
+            Button:
+                text: 'Reset Game (under construction)'
+                on_press: root.manager.current = 'Main'
+            Button:
+                text: 'Goto Main'
+                on_press: root.manager.current = 'Main'
+        
+<CalculatorScreen>:
+    BoxLayout:
+        Label:
+            color: Colors.get('blue',(0,0,1,1))
+            text: 'Label1'
+        Label:
+            color: Colors.get('blue',(0,0,1,1))
+            text: 'Label2'
+    RawLayout:
+        CustButton:
+            text: 'Goto Main'
+            on_press: root.manager.current = 'Main'
+        CustButton:
+            text: 'Quit'
+            on_press: app.get_running_app().stop()       
+
+<CustButton>:
+    font_size: 35
+    background_color: 0,0,0,0
+    canvas.before:
+        Color:
+            rgba: (.4, .4, .4, 1) if self.state=='normal' else (0,.7,.7,1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            # radius: [20, ]
+
+<RawLayout>:
+    spacing: 8
+    padding: 8
+    size_hint: [1, .2]
+
+<MainScreen>:
+    id: mainscreen
+    main_scroll_lbl: msglbl
+    side_label: lbl1
+    BoxLayout:
+    #pos_hint: {'top': 1}
+        orientation: 'vertical'
+        ActionBar:
+            size_hint: (1, .1)
+            background_image: 'white-bg.png'
+            background_color: Colors.get('SaddleBrown',(0,0,1,1))
+            ActionView:
+                use_separator: True
+                ActionPrevious:
+                    title: 'kivy3'
+                    with_previous: True
+                ActionButton:
+                    text: 'Exit'
+                    on_press: app.on_exit_in_actionbar()
+                ActionOverflow:
+                ActionGroup:
+                    text: 'Numbers'
+                    width : '100dp'
+                    ActionButton:
+                        text: 'Prime'
+                        width : '75dp'
+                        on_press: root.prime_numbers()
+                    ActionButton:
+                        text: 'Fibonacci'
+                        width : '75dp'
+                        on_press: root.fibonacci_numbers()
+                ActionGroup:
+                    text: 'HTTP'
+                    ActionButton:
+                        text: 'Arretori'
+                        on_press: root.webbrowse('www.arretori.hu')
+                    ActionButton:
+                        text: 'Publications'
+                        on_press: root.webbrowse('www.arretori.hu/publication/kivy3/')
+                ActionGroup:
+                    text: 'Store'
+                    ActionButton:
+                        text: 'User Data'
+                        on_press: root.user_data_dir_wr()
+                    ActionButton:
+                        text: 'read UD'
+                        on_press: root.read_UD_file()
+                    ActionButton:
+                        text: 'Storage'
+                        on_press: root.storage_dir_wr()
+                    ActionButton:
+                        text: 'read ST'
+                        on_press: root.read_ST_file()
+                    ActionButton:
+                        text: 'SD'
+                        on_press: root.sd_dir_wr()
+                    ActionButton:
+                        text: 'read SD'
+                        on_press: root.read_SD_file()
+                ActionGroup:
+                    text: 'Os-Sys'
+                    ActionButton:
+                        text: 'Colors'
+                        on_press: root.colors_update()                    
+                    ActionButton:
+                        text: 'Environ'
+                        on_press: root.os_environ()
+                    ActionButton:
+                        text: 'SysArgs'
+                        on_press: root.sys_argv()
+                    ActionButton:
+                        text: 'SysPath'
+                        on_press: root.sys_path()
+                    ActionButton:
+                        text: 'Int_IP'
+                        on_press: root.int_ip_addr()
+                    ActionButton:
+                        text: 'Ext_IP'
+                        on_press: root.ext_ip_addr()
+                    ActionButton:
+                        text: 'Port Scan'
+                        on_press: root.port_scan()
+        #                
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint: (1, .1)
+            Label:
+                id: lbl1
+                text: "scr.size: "+str(WindowSizes)+'\nPlatform:'+Platform 
+                color: Colors.get('blue',(0,0,1,1))
+                canvas.before:
+                    Color: 
+                        rgba: Colors.get('DarkKhaki',(0,0,1,1))
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+            Button:
+                id: btn1
+                text: 'Goto XandO'
+                background_color : Colors.get('LightSkyBlue',(0,0,1,1))
+                on_press: root.manager.current = 'XandO'        
+            Spinner:
+                id: spinner1
+                background_color: Colors.get('Navy',(0,0,1,1))
+                text : '<Spinner>'
+                values : root.spinner1_values
+                # on_text: root.manager.current = self.text
+                on_text: root.on_spinner1_select(self.text)
+        ScrollView:
+            # do_scroll_x: False
+            # do_scroll_y: True
+            Label:
+                id: msglbl
+                size_hint_y : None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                color: Colors.get('blue',(0,0,1,1))
+                text: 'Platform:'+Platform+'\napp_folder: '+PyFilePath+'\nuser_folder: '+app.get_running_app().user_data_dir
+                halign: 'left'
+                valign: 'bottom'
+                padding_x : 20

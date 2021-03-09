@@ -1,0 +1,19 @@
+{
+    "Name": "kivy1",
+    "Created": "2021-02-19 13:27:00",
+    "Updates": {},
+    "Comments": {},
+    "StartsWith": "",
+    "GuiMode": {
+        "GuiMode": "Kivy",
+        "Kiosk": "Chrome-Kiosk",
+        "Flask": "DefaultBrowser",
+        "FlaskWebGui": "FlaskWebGui",
+        "Django": "Django",
+        "Kivy": "Kivy",
+        "Tkinter": "Tkinter",
+        "CSS": "pyBase.css",
+        "kv_directory" : "templates",
+        "kv_file" : "kivy1.kv"
+    }
+}
